@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
 import type { Hotel } from "@/lib/types";
 import HotelComparisonTable from "@/components/HotelComparisonTable";
 
-export default function HotelsPage() {
+function HotelsContent() {
   const searchParams = useSearchParams();
   const eventId = searchParams.get("event_id") ?? undefined;
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -27,12 +27,19 @@ export default function HotelsPage() {
           </p>
         </div>
       </div>
-
       {loading ? (
         <div className="text-center py-16 text-[#555]">Loading hotels…</div>
       ) : (
         <HotelComparisonTable hotels={hotels} />
       )}
     </div>
+  );
+}
+
+export default function HotelsPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-16 text-[#555]">Loading…</div>}>
+      <HotelsContent />
+    </Suspense>
   );
 }
