@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: 3atef-backend
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt && python -m playwright install chromium --with-deps
+    startCommand: uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: false
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: 3atef-db
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: FRONTEND_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SCRAPER_HEADLESS
+        value: "true"
+
+databases:
+  - name: 3atef-db
+    databaseName: 3atef_db
+    user: 3atef
+    plan: free

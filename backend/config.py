@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -8,6 +9,14 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "sqlite:///./3atef_dev.db"
     DATABASE_URL_SQLITE: str = "sqlite:///./3atef_dev.db"
+
+    @field_validator("DATABASE_URL")
+    @classmethod
+    def fix_postgres_scheme(cls, v: str) -> str:
+        # Render provides postgres:// but SQLAlchemy 2.0 requires postgresql://
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        return v
 
     # Email — Outlook
     OUTLOOK_CLIENT_ID: str = ""
