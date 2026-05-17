@@ -11,7 +11,7 @@ from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+client = AsyncOpenAI(api_key=settings.OPENROUTER_API_KEY, base_url=settings.OPENROUTER_BASE_URL)
 
 POLICY_PROMPT = """
 You are analyzing a hotel booking page. Extract the following policy information as plain text:
@@ -60,7 +60,7 @@ async def _extract_policy(hotel: HotelData) -> HotelData:
     try:
         import json
         response = await client.chat.completions.create(
-            model="gpt-4o",
+            model=settings.LLM_MODEL,
             messages=[
                 {"role": "system", "content": "You are a hotel policy extraction assistant. Return only valid JSON."},
                 {"role": "user", "content": POLICY_PROMPT.format(content=content)},

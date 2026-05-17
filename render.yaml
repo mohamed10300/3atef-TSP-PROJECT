@@ -10,8 +10,10 @@ services:
         fromDatabase:
           name: 3atef-db
           property: connectionString
-      - key: OPENAI_API_KEY
+      - key: OPENROUTER_API_KEY
         sync: false
+      - key: LLM_MODEL
+        value: openai/gpt-4o
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL

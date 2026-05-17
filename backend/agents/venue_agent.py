@@ -14,7 +14,7 @@ from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+client = AsyncOpenAI(api_key=settings.OPENROUTER_API_KEY, base_url=settings.OPENROUTER_BASE_URL)
 
 VENUE_PROMPT = """
 You are a venue research assistant. Given this event, return a JSON with:
@@ -45,7 +45,7 @@ async def venue_agent(state: AgentState) -> AgentState:
 
     try:
         response = await client.chat.completions.create(
-            model="gpt-4o",
+            model=settings.LLM_MODEL,
             messages=[
                 {"role": "system", "content": "You are a venue research assistant. Return only valid JSON."},
                 {"role": "user", "content": VENUE_PROMPT.format(

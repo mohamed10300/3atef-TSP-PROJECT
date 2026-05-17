@@ -3,8 +3,10 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # OpenAI
-    OPENAI_API_KEY: str = ""
+    # OpenRouter
+    OPENROUTER_API_KEY: str = ""
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+    LLM_MODEL: str = "openai/gpt-4o"
 
     # Database
     DATABASE_URL: str = "sqlite:///./3atef_dev.db"

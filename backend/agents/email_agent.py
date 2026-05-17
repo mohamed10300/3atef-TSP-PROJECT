@@ -16,7 +16,7 @@ from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+client = AsyncOpenAI(api_key=settings.OPENROUTER_API_KEY, base_url=settings.OPENROUTER_BASE_URL)
 
 EXTRACTION_PROMPT = """
 Extract event information from this email content. Return JSON with these exact keys:
@@ -37,7 +37,7 @@ Email content:
 async def _extract_event_from_email(email_text: str) -> Optional[EventData]:
     try:
         response = await client.chat.completions.create(
-            model="gpt-4o",
+            model=settings.LLM_MODEL,
             messages=[
                 {"role": "system", "content": "You are an event data extraction assistant. Return only valid JSON."},
                 {"role": "user", "content": EXTRACTION_PROMPT.format(content=email_text[:6000])},
