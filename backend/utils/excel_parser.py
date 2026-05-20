@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 
 VENDOR_COLUMNS = ["hotel_name", "vendor_price", "room_type"]
 COMPETITOR_COLUMNS = ["hotel_name", "competitor_price"]
@@ -12,6 +13,14 @@ def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
         .str.replace(r"[^a-z0-9_]", "", regex=True)
     )
     return df
+
+
+def _safe_float(val):
+    try:
+        f = float(val)
+        return None if math.isnan(f) or math.isinf(f) else round(f, 2)
+    except Exception:
+        return None
 
 
 def _map_company_format(df: pd.DataFrame) -> pd.DataFrame:
@@ -72,12 +81,12 @@ def parse_vendor_sheet(path: str, sheet_name: str = "Vendor") -> dict[str, dict]
         if not name or name.lower() == "nan":
             continue
         result[name] = {
-            "vendor_price": float(row[price_col]),
+            "vendor_price": _safe_float(row[price_col]),
             "room_type": "",
-            "star_rating": float(row["star_rating"]) if "star_rating" in df.columns and pd.notna(row.get("star_rating")) else None,
-            "distance": float(row["distance"]) if "distance" in df.columns and pd.notna(row.get("distance")) else None,
-            "review_score": float(row["review_score"]) if "review_score" in df.columns and pd.notna(row.get("review_score")) else None,
-            "booking_price": float(row["booking_price"]) if "booking_price" in df.columns and pd.notna(row.get("booking_price")) else None,
+            "star_rating": _safe_float(row.get("star_rating")) if "star_rating" in df.columns else None,
+            "distance": _safe_float(row.get("distance")) if "distance" in df.columns else None,
+            "review_score": _safe_float(row.get("review_score")) if "review_score" in df.columns else None,
+            "booking_price": _safe_float(row.get("booking_price")) if "booking_price" in df.columns else None,
         }
     return result
 
@@ -92,10 +101,9 @@ def parse_competitor_sheet(path: str, sheet_name: str = "Competitor") -> dict[st
     df = df.dropna(subset=["hotel_name", "competitor_price"])
     df["competitor_price"] = pd.to_numeric(df["competitor_price"], errors="coerce").round(2)
     df = df.dropna(subset=["competitor_price"])
-    return {str(row["hotel_name"]).strip(): float(row["competitor_price"]) for _, row in df.iterrows()}
+    return {str(row["hotel_name"]).strip(): _safe_float(row["competitor_price"]) for _, row in df.iterrows()}
 
 
 def preview_excel(path: str, rows: int = 10) -> list[dict]:
     df = _load_and_clean(path, sheet_index=0)
     return df.head(rows).to_dict(orient="records")
-    
