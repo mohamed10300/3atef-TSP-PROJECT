@@ -53,7 +53,7 @@ def _load_and_clean(path: str, sheet_index: int = 0) -> pd.DataFrame:
     return df
 
 
-def parse_vendor_sheet(path: str, sheet_name: str = "Vendor") -> dict[str, dict]:
+def parse_vendor_sheet(path: str, sheet_name: str = "Vendor") -> dict:
     try:
         df = _load_and_clean(path, sheet_index=0)
     except Exception as e:
@@ -91,7 +91,7 @@ def parse_vendor_sheet(path: str, sheet_name: str = "Vendor") -> dict[str, dict]
     return result
 
 
-def parse_competitor_sheet(path: str, sheet_name: str = "Competitor") -> dict[str, float]:
+def parse_competitor_sheet(path: str, sheet_name: str = "Competitor") -> dict:
     try:
         df = _load_and_clean(path, sheet_index=0)
     except Exception:
@@ -104,6 +104,6 @@ def parse_competitor_sheet(path: str, sheet_name: str = "Competitor") -> dict[st
     return {str(row["hotel_name"]).strip(): _safe_float(row["competitor_price"]) for _, row in df.iterrows()}
 
 
-def preview_excel(path: str, rows: int = 10) -> list[dict]:
+def preview_excel(path: str, rows: int = 10) -> list:
     df = _load_and_clean(path, sheet_index=0)
     return df.head(rows).to_dict(orient="records")
