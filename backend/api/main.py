@@ -5,6 +5,8 @@ from fastapi import FastAPI
 
 from backend.api.middleware import apply_middleware
 from backend.api.routes import events, hotels, reports, excel, run
+from backend.api.routes.local_agent_routes import router as local_agent_router
+from backend.api.routes.voice_routes import router as voice_router
 from backend.core.scheduler import start_scheduler, stop_scheduler, schedule_pipeline_run
 from backend.db.database import create_tables
 from backend.utils.logger import get_logger
@@ -37,6 +39,8 @@ app.include_router(events.router)
 app.include_router(hotels.router)
 app.include_router(reports.router)
 app.include_router(excel.router)
+app.include_router(local_agent_router)
+app.include_router(voice_router)
 
 
 @app.get("/health")
