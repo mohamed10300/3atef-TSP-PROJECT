@@ -1,8 +1,9 @@
 services:
   - type: web
     name: 3atef-backend
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt && python -m playwright install chromium
+    startCommand: python -m uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT
     autoDeploy: false
     envVars:
       - key: DATABASE_URL
@@ -16,13 +17,15 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        sync: false
+        value: https://3atef-tsp-project-88iw-o07wee4lk-maqsoud-s-projects.vercel.app
       - key: ALLOWED_ORIGINS
-        sync: false
+        value: https://3atef-tsp-project-88iw-o07wee4lk-maqsoud-s-projects.vercel.app
       - key: SECRET_KEY
         generateValue: true
       - key: SCRAPER_HEADLESS
         value: "true"
+      - key: PYTHON_VERSION
+        value: "3.11.0"
 
 databases:
   - name: 3atef-db
