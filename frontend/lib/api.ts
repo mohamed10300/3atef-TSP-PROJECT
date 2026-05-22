@@ -10,7 +10,12 @@ import type {
 
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-const http = axios.create({ baseURL: BASE });
+const http = axios.create({
+  baseURL: BASE,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
+});
 
 export const api = {
   async runPipeline(req: RunRequest): Promise<RunResponse> {
@@ -53,7 +58,10 @@ export const api = {
     const form = new FormData();
     form.append("file", file);
     const { data } = await http.post<ExcelUploadResponse>("/api/excel/upload", form, {
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "ngrok-skip-browser-warning": "true",
+      },
     });
     return data;
   },
