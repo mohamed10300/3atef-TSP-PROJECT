@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     API_PORT: int = 8000
     FRONTEND_URL: str = "http://localhost:3000"
+    # Comma-separated extra origins to allow (e.g. Vercel preview URLs)
+    ALLOWED_ORIGINS: str = ""
     SECRET_KEY: str = "changeme"
 
     # Scraping
